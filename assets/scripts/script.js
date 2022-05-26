@@ -1,22 +1,22 @@
-let startMenu = document.querySelector('.start-menu');
-let gameScreen = document.querySelector('.game');
-let scores = document.querySelector('.scores');
-let header = document.querySelector('header');
-let currentScore = document.querySelector('#score');
-let questionBox = document.querySelector('#question');
-let scoreList = document.querySelector('#highscores');
-let playBtn = document.querySelector('#play');
-let timer = document.querySelector('#timer');
-let answerBtn = document.querySelector('.game');
-let resetScores = document.querySelector('#reset-scores');
-let restartGame = document.querySelector('#restart-game');
+let startMenu = document.querySelector('.start-menu'); // start menu screen
+let gameScreen = document.querySelector('.game'); // game screen
+let scores = document.querySelector('.scores'); // scorebard screen
+let header = document.querySelector('header'); // header containing timer and score
+let currentScore = document.querySelector('#score'); // current score element in header
+let questionBox = document.querySelector('#question'); // question box on game screen
+let scoreList = document.querySelector('#highscores'); // score list on scoreboard
+let playBtn = document.querySelector('#play'); // play button
+let timer = document.querySelector('#timer'); // current time in header
+let answerBtn = document.querySelector('.game'); // answer button
+let resetScores = document.querySelector('#reset-scores'); // reset score button
+let restartGame = document.querySelector('#restart-game'); // restart game button
 
-let endGame = false;
-let question = '';
-let correctAnswer = '';
-let timeLeft = 60;
-let score = 0; // lets say 5 for each correct answer
-let usedQuestions = {};
+let endGame = false; // a conditional to see if the user has answered all the questions
+let question = ''; // the current selected question
+let correctAnswer = ''; // the correct answer for the currently selected question
+let timeLeft = 60; // time left on the clock
+let score = 0; // user score
+let usedQuestions = {}; // add all used questions into this object
 
 let questionBank = {
     // formatting: question: {"answer": "ans", "wrongAnswers": [1, 2, 3]}
@@ -90,33 +90,35 @@ let questionBank = {
 // render highscores
 
 function renderScores(scoreObject) {
-    scoreList.innerHTML = '';
-    for (let [key, value] of Object.entries(scoreObject).sort().reverse()) {
-        let newScore = document.createElement('li');
-        newScore.textContent = `${value}'s Score: ${key}`;
-        scoreList.appendChild(newScore);
+    scoreList.innerHTML = ''; // empty scoreboard
+    for (let [key, value] of Object.entries(scoreObject).sort().reverse()) { // sort through object and sort in reverse (highest to lowest)
+        let newScore = document.createElement('li'); // create new <li> element
+        newScore.textContent = `${value}'s Score: ${key}`; // add score to the list element
+        scoreList.appendChild(newScore); // add it to the <ol>
     }
 }
 
+// start game function
+
 function startGame() {
-    score = 0;
-    timeLeft = 59;
-    timer.innerHTML = `${timeLeft + 1} seconds left`;
-    score.innerHTML = `Score: ${score}`;
-    let countdown = setInterval(function() {
-        if (timeLeft === 1) timer.innerHTML = `${timeLeft} second left`;
-        else if (timeLeft > 1) timer.innerHTML = `${timeLeft} seconds left`;
-        else {
-            clearInterval(countdown);
-            questionBank = Object.assign(questionBank, usedQuestions);
-            header.setAttribute('style', 'visibility: hidden');
-            gameScreen.setAttribute('style', 'display: none;');
-            scores.setAttribute('style', 'display: flex; text-align: center; justify-content: center;');
-            usedQuestions = {}
-            newScore();
+    score = 0; // reset score
+    timeLeft = 59; // reset timer
+    timer.innerHTML = `${timeLeft + 1} seconds left`; // start timer at 60 seconds
+    score.innerHTML = `Score: ${score}`; // set score to 0 on to top
+    let countdown = setInterval(function() { // start countdown
+        if (timeLeft === 1) timer.innerHTML = `${timeLeft} second left`; // if the time is at 1 second, use the singular of second
+        else if (timeLeft > 1) timer.innerHTML = `${timeLeft} seconds left`; // if the time is above 1 second use the plural of second
+        else { // if time ran out end game and move to score
+            clearInterval(countdown); // remove the countdown
+            questionBank = Object.assign(questionBank, usedQuestions); // reset the question bank
+            header.setAttribute('style', 'visibility: hidden'); // set the header to invisible
+            gameScreen.setAttribute('style', 'display: none;'); // set the game screen to none
+            scores.setAttribute('style', 'display: flex; text-align: center; justify-content: center;'); // center and display score screen
+            usedQuestions = {} // clear used questions
+            newScore(); // create a new score for the user
         }
 
-        if (endGame) {
+        if (endGame) { // if the user has answered all the questions run the same procedures as if it hit 0 seconds
             clearInterval(countdown);
             questionBank = Object.assign(questionBank, usedQuestions);
             header.setAttribute('style', 'visibility: hidden');
@@ -127,88 +129,86 @@ function startGame() {
             newScore();
         }
 
-        // event listener
-
-        timeLeft--;
+        timeLeft--; // remove 1 second
     }, 1000);
-    startMenu.setAttribute('style', 'display: none;');
-    gameScreen.setAttribute('style', 'display: flex; margin-top: 10%;');
-    header.setAttribute('style', 'visibility: visible;');
-    scores.setAttribute('style', 'display: none;');
-    createQuestion();
+    startMenu.setAttribute('style', 'display: none;'); // hide start screen
+    gameScreen.setAttribute('style', 'display: flex; margin-top: 10%;'); // show game screen
+    header.setAttribute('style', 'visibility: visible;'); // show the header with timer and score
+    scores.setAttribute('style', 'display: none;'); // hide score screen
+    createQuestion(); // generate new random question
 }
 
-function createQuestion() {
-    try {
-        let choices = [];
-        let buttons = document.querySelectorAll('#answer');
-        let questions = Object.keys(questionBank);
+function createQuestion() { // creating a new question
+    try { // if the index doesnt exceed the length of the array, create question
+        let choices = []; // create choices array
+        let buttons = document.querySelectorAll('#answer'); // select answer button
+        let questions = Object.keys(questionBank); // grab questions from the questionBank
     
-        question = questions[Math.floor(Math.random() * questions.length)];
-        correctAnswer = questionBank[question].answer;
-        choices = questionBank[question].wrongAnswers;
+        question = questions[Math.floor(Math.random() * questions.length)]; // choose a random question from the question bank
+        correctAnswer = questionBank[question].answer; // assign correctAsnwer to the answer of the question
+        choices = questionBank[question].wrongAnswers; // create choice array with the options to choose from
     
-        usedQuestions[question] = {
+        usedQuestions[question] = { // add this question to the usedQuestions object
             "answer": correctAnswer,
             "wrongAnswers": choices
         }
     
-        delete questionBank[question];
+        delete questionBank[question]; // remove the question from the questionBank
         
-        choices.push(correctAnswer);
+        choices.push(correctAnswer); // add the correctAnswer to the question choices
     
-        questionBox.textContent = question;
+        questionBox.textContent = question; // switch the displayed question to the new question
     
-        for (let i = 0; i < buttons.length; i++) {
+        for (let i = 0; i < buttons.length; i++) { // assign the options to each button on the screen
             buttons[i].textContent = choices[i];
         }
-    } catch (err) {
+    } catch (err) { // if the index exceeds the length of the array, catch the error and end the game
         endGame = true;
     }
 
-} // assign values to buttons
+}
 
-function checkAnswer() {
+function checkAnswer() { // check if the users guess was correct
     return function(event) {
-        let element = event.target;
+        let element = event.target; // select the button pressed
 
-        if (element.matches('#answer')) {
-            let guess = element.textContent;
-            if (guess === correctAnswer) {
+        if (element.matches('#answer')) { // if the button pressed is apart of the answer ID
+            let guess = element.textContent; // take the text inside the button as the guess
+            if (guess === correctAnswer) { // if the guess is the answer add 5 to the score
                 score += 5;
-            } else timeLeft -= 15;
-            if (timeLeft === 1) timer.innerHTML = `${timeLeft} second left`;
-            else if (timeLeft > 1) timer.innerHTML = `${timeLeft} seconds left`;
-            currentScore.innerHTML = `Score: ${score}`;
-            createQuestion();
+            } else timeLeft -= 15; // if the guess is not the answer, remove 15 seconds from the timer
+            if (timeLeft === 1) timer.innerHTML = `${timeLeft} second left`; // check plurality of the time left
+            else if (timeLeft > 1) timer.innerHTML = `${timeLeft} seconds left`; // ^ ^ ^
+            currentScore.innerHTML = `Score: ${score}`; // update displayed score
+            createQuestion(); // create a new question
         }
     }
 }
 
-function newScore() {
-    let username = prompt('Enter your name');
+function newScore() { // prompt user with their name to save their score and name
+    let username = prompt('Enter your name'); // get name from the user
 
-    let scoreboard = JSON.parse(localStorage.getItem('highscores'));
+    let scoreboard = JSON.parse(localStorage.getItem('highscores')); // grab the saved data of the site
 
-    if (scoreboard !== null) {
+    if (scoreboard !== null) { // if the storage existed, add name and score to an object to save to storage
         scoreboard[score] = username;
         localStorage.setItem('highscores', JSON.stringify(scoreboard));
-        renderScores(scoreboard);
-        return;
+        renderScores(scoreboard); // display the scoreboard
+        return; // exit function
     } 
-    let highscores = {};
+    let highscores = {}; // if theres no saved data, create a new scoring object and save it to local storage
     highscores[score] = username;
     localStorage.setItem('highscores', JSON.stringify(highscores));
-    renderScores(highscores);
+    renderScores(highscores); // show scoreboard
 }
 
-playBtn.addEventListener('click', startGame);
+playBtn.addEventListener('click', startGame); // play button listener
 
-answerBtn.onclick = checkAnswer();
+answerBtn.onclick = checkAnswer(); // answer button listener
 
-restartGame.addEventListener('click', startGame);
+restartGame.addEventListener('click', startGame); // restart game listener
 
-resetScores.addEventListener('click', function() { 
+resetScores.addEventListener('click', function() { // reset scores listener
     localStorage.clear();
     scoreList.innerHTML = '';
 });
