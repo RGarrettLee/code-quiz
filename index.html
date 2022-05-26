@@ -3,13 +3,39 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
+        <title>Javascript Quiz</title>
+        <meta name="description" content="A code quiz for testing your Javascript knowledge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./assets/css/style.css">
     </head>
     <body>
-        
+        <header>
+            <h1 id="timer">Seconds Left</h1>
+            <h1 id="score">Score: 0</h1>
+        </header>
+        <br>
+        <section class="start-menu">
+            <h1>Javascript Code Quiz!</h1>
+            <h3>Let's test your Javascript knowledge</h3>
+            <button type="button" id="play">Play</button>
+        </section>
+        <section class="game">
+            <textarea id="question" disabled></textarea>
+            <button id="answer" type="button"></button>
+            <button id="answer" type="button"></button>
+            <button id="answer" type="button"></button>
+            <button id="answer" type="button"></button>
+        </section>
+        <section class="scores">
+            <h2>Highscores</h2>
+            <ol id="highscores"></ol>
+            <button id="reset-scores" type="button">Reset</button>
+            <button id="restart-game" type="button">Restart</button>
+        </section>
+
         <script src="./assets/scripts/script.js" async defer></script>
     </body>
 </html>
