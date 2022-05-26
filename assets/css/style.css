@@ -1,0 +1,85 @@
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
+header {
+    display: block;
+    visibility: hidden;
+}
+
+h1,
+h2,
+h3,
+p {
+    color: #f1f3f0;
+}
+
+body {
+    background-color: #2f2f30;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    position: relative;
+    background-color: #fea418;
+    font-weight: bold;
+    color: #2f2f30;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 50%;
+    border-radius: 10px;
+}
+
+.start-menu {
+    margin-top: 10%;
+}
+
+.game {
+    display: none;
+    align-items: center;
+}
+
+.scores {
+    display: none;
+    color: #f1f3f0;
+}
+
+#play {
+    width: 25%;
+}
+
+#timer {
+    display: inline-flex;
+}
+
+#score {
+    display: inline-flex;
+    float: right;
+}
+
+#question {
+    appearance: none;
+    display: block;
+    border: none;
+    width: 50%;
+    padding: 15px 15px 8px 15px;
+    font-size: 1.2rem;
+    text-align: center;
+    margin: 10px 0 10px 0;
+    border: 2px solid #f1f3f0;
+    border-radius: 5px;
+    resize: none;
+    overflow: hidden;
+    color: #f1f3f0;
+}
+
+#answer {
+    margin: 1rem 0 1rem 0;
+}
